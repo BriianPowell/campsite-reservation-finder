@@ -45,7 +45,7 @@ recreation_area:
 start_date: 2026-08-01
 end_date: 2026-08-05
 nights: 2
-notifications: email
+notifications: apprise
 search_once: true
 continuous: false
 search_forever: false
@@ -70,29 +70,22 @@ camply campgrounds --provider ReserveCalifornia --search "Sonoma Coast"
 
 ## GitHub Secrets
 
-Add these repository secrets before enabling email notifications:
+Add this repository secret before enabling notifications:
 
-- `EMAIL_TO_ADDRESS`
-- `EMAIL_USERNAME`
-- `EMAIL_PASSWORD`
+- `APPRISE_URL`
 
-Optional email secrets supported by Camply:
+For iCloud Mail, use an app-specific password and Apple’s SMTP server with Apprise’s STARTTLS email URL:
 
-- `EMAIL_FROM_ADDRESS`
-- `EMAIL_SUBJECT_LINE`
-- `EMAIL_SMTP_SERVER`
-- `EMAIL_SMTP_PORT`
+```text
+mailtos://_?smtp=smtp.mail.me.com&from=you@icloud.com&to=you@icloud.com&user=you@icloud.com&pass=APP_SPECIFIC_PASSWORD
+```
 
-`EMAIL_SUBJECT_LINE` is used as a subject prefix by `scripts/run-searches.sh`. Each Camply run appends the search config name, so a prefix of `Camply` produces subjects like `Camply: recreation-yosemite` and `Camply: reserve-california-coast`.
-
-For Gmail, `EMAIL_USERNAME` is usually your email address and `EMAIL_PASSWORD` should be an app password, not your normal account password.
+Apple documents iCloud SMTP as `smtp.mail.me.com` on port `587` with SSL required. Apprise’s `mailtos://` uses STARTTLS on port `587`, which matches iCloud. Camply’s built-in `email` notifier uses implicit SSL and is not a good fit for iCloud SMTP.
 
 You can set secrets with the GitHub CLI from this repository after creating the GitHub repo:
 
 ```bash
-gh secret set EMAIL_TO_ADDRESS
-gh secret set EMAIL_USERNAME
-gh secret set EMAIL_PASSWORD
+gh secret set APPRISE_URL
 ```
 
 ## Run Locally
@@ -106,13 +99,10 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-Export email settings if you want to test real notifications:
+Export `APPRISE_URL` if you want to test real notifications:
 
 ```bash
-export EMAIL_TO_ADDRESS="you@example.com"
-export EMAIL_USERNAME="you@example.com"
-export EMAIL_PASSWORD="your-app-password"
-export EMAIL_SUBJECT_LINE="Camply"
+export APPRISE_URL="mailtos://_?smtp=smtp.mail.me.com&from=you@icloud.com&to=you@icloud.com&user=you@icloud.com&pass=APP_SPECIFIC_PASSWORD"
 ```
 
 Run all enabled searches:
@@ -121,10 +111,10 @@ Run all enabled searches:
 ./scripts/run-searches.sh
 ```
 
-Test Camply's email notification setup directly:
+Test Camply's Apprise notification setup directly:
 
 ```bash
-camply test-notifications --notifications email
+camply test-notifications --notifications apprise
 ```
 
 ## Pre-Commit Checks

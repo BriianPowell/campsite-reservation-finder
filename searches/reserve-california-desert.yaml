@@ -16,7 +16,7 @@ days:
 nights: 3
 
 weekends: false
-notifications: email
+notifications: apprise
 search_once: true
 continuous: false
 search_forever: false

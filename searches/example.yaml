@@ -18,7 +18,7 @@ weekends: false
 #   - [RV, 25]
 
 # GitHub Actions should run short one-shot searches on a schedule.
-notifications: email
+notifications: apprise
 search_once: true
 continuous: false
 search_forever: false
