@@ -34,7 +34,7 @@ searches/
   reserve-california-desert.yaml
 ```
 
-Tune `start_date`, `end_date`, `days`, and `nights` independently in each file. For example, desert searches can target cooler months while Yosemite and Sequoia searches can focus on summer and early fall.
+Tune `start_date`, `end_date`, and `nights` independently in each file. The current configs use explicit Thursday-to-Sunday windows: each `start_date` entry is a Thursday arrival, and the matching `end_date` entry is the Sunday checkout date. For example, desert searches can target cooler months while Yosemite and Sequoia searches can focus on summer and early fall.
 
 Edit the new file with real Recreation.gov IDs and dates:
 
@@ -42,9 +42,11 @@ Edit the new file with real Recreation.gov IDs and dates:
 provider: RecreationDotGov
 recreation_area:
   - 2991
-start_date: 2026-08-01
-end_date: 2026-08-05
-nights: 2
+start_date:
+  - 2026-08-06
+end_date:
+  - 2026-08-09
+nights: 3
 notifications: apprise
 search_once: true
 continuous: false
@@ -58,6 +60,20 @@ You can use one of these target fields:
 - `campsites` for exact campsite IDs. Camply treats this as the most specific target.
 
 Disable a search by renaming it to end with `.disabled.yaml`, for example `searches/my-trip.disabled.yaml`.
+
+When using multiple date windows, keep `start_date` and `end_date` lists the same length. Camply pairs them by position:
+
+```yaml
+start_date:
+  - 2026-08-06
+  - 2026-08-13
+end_date:
+  - 2026-08-09
+  - 2026-08-16
+nights: 3
+```
+
+Do not combine `days: Thursday` with `nights: 3`; Camply filters the search dates down to Thursdays before checking consecutive nights, which prevents true Thu-Sun matching.
 
 Find provider IDs with Camply:
 
