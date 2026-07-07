@@ -1,0 +1,19 @@
+# Recreation.gov Mojave National Preserve search
+provider: RecreationDotGov
+
+campgrounds:
+  - 10332664 # Mojave National Preserve - Hole-in-the-Wall Campground
+  - 10332703 # Mojave National Preserve - Mid Hills Campground
+
+start_date: 2026-11-01
+end_date: 2027-02-28
+days:
+  - Thursday
+nights: 3
+
+weekends: false
+notifications: email
+search_once: true
+continuous: false
+search_forever: false
+notify_first_try: false

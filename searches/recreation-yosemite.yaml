@@ -1,0 +1,23 @@
+# Recreation.gov Yosemite search
+provider: RecreationDotGov
+
+campgrounds:
+  - 232447 # Yosemite National Park - Upper Pines Campground
+  - 232449 # Yosemite National Park - North Pines Campground
+  - 232450 # Yosemite National Park - Lower Pines Campground
+  - 232448 # Yosemite National Park - Tuolumne Meadows Campground
+  - 232446 # Yosemite National Park - Wawona Campground
+  - 232451 # Yosemite National Park - Hodgdon Meadow Campground
+
+start_date: 2026-08-01
+end_date: 2026-11-30
+days:
+  - Thursday
+nights: 3
+
+weekends: false
+notifications: email
+search_once: true
+continuous: false
+search_forever: false
+notify_first_try: false

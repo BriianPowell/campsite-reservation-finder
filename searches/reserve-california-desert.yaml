@@ -1,0 +1,23 @@
+# ReserveCalifornia desert search
+provider: ReserveCalifornia
+
+campgrounds:
+  - 776 # Anza-Borrego Desert SP - Borrego Palm Canyon (sites 1-52)
+  - 327 # Anza-Borrego Desert SP - Borrego Palm Canyon (sites 53-89)
+  - 777 # Anza-Borrego Desert SP - Borrego Palm Canyon (sites 90-120)
+  - 2151 # Anza-Borrego Desert SP - Borrego Palm Canyon Group (G1-G5)
+  - 329 # Anza-Borrego Desert SP - Tamarisk Grove Campground
+  - 330 # Anza-Borrego Desert SP - Vern Whitaker Horse Camp
+
+start_date: 2026-08-01
+end_date: 2026-11-30
+days:
+  - Thursday
+nights: 3
+
+weekends: false
+notifications: email
+search_once: true
+continuous: false
+search_forever: false
+notify_first_try: false

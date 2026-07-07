@@ -1,0 +1,20 @@
+# Recreation.gov Big Sur and Inyo search
+provider: RecreationDotGov
+
+campgrounds:
+  - 231959 # Plaskett Creek Campground, Big Sur, CA
+  - 233116 # Los Padres National Forest - Kirk Creek Campground
+  - 232069 # Inyo National Forest - Lone Pine
+
+start_date: 2026-08-01
+end_date: 2026-11-30
+days:
+  - Thursday
+nights: 3
+
+weekends: false
+notifications: email
+search_once: true
+continuous: false
+search_forever: false
+notify_first_try: false

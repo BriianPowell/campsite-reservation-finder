@@ -1,0 +1,25 @@
+# Copy this file to a new name in this directory, then replace the placeholder
+# values with your real Recreation.gov IDs and trip dates.
+provider: RecreationDotGov
+
+# Use recreation_area for broad searches, campgrounds for specific campground IDs,
+# or campsites for exact campsite IDs. Campsites override broader search fields.
+recreation_area:
+  - CHANGE_ME
+
+# Dates use YYYY-MM-DD. Camply searches for stays between start_date and end_date.
+start_date: 2026-08-01
+end_date: 2026-08-05
+nights: 2
+
+# Optional filters.
+weekends: false
+# equipment:
+#   - [RV, 25]
+
+# GitHub Actions should run short one-shot searches on a schedule.
+notifications: email
+search_once: true
+continuous: false
+search_forever: false
+notify_first_try: false

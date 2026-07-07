@@ -1,0 +1,22 @@
+# Recreation.gov Sequoia and Kings Canyon search
+provider: RecreationDotGov
+
+campgrounds:
+  - 232460 # Sequoia & Kings Canyon National Parks - Dorst Creek Campground
+  - 232461 # Sequoia & Kings Canyon National Parks - Lodgepole Campground
+  - 10124502 # Sequoia & Kings Canyon National Parks - Azalea Campground
+  - 234752 # Sequoia & Kings Canyon National Parks - Sunset Campground
+  - 249982 # Sequoia & Kings Canyon National Parks - Buckeye Flat Campground
+
+start_date: 2026-08-01
+end_date: 2026-11-30
+days:
+  - Thursday
+nights: 3
+
+weekends: false
+notifications: email
+search_once: true
+continuous: false
+search_forever: false
+notify_first_try: false

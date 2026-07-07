@@ -1,0 +1,22 @@
+# Recreation.gov Joshua Tree search
+provider: RecreationDotGov
+
+campgrounds:
+  - 272300 # Joshua Tree National Park - Jumbo Rocks Campground
+  - 232472 # Joshua Tree National Park - Indian Cove Campground
+  - 10056207 # Joshua Tree National Park - Ryan Campground
+  - 232473 # Joshua Tree National Park - Black Rock Campground
+  - 272299 # Joshua Tree National Park - Cottonwood Campground
+
+start_date: 2026-11-01
+end_date: 2027-02-28
+days:
+  - Thursday
+nights: 3
+
+weekends: false
+notifications: email
+search_once: true
+continuous: false
+search_forever: false
+notify_first_try: false
