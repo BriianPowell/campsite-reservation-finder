@@ -1,1 +1,2 @@
 camply==0.34.2
+pre-commit==4.6.0

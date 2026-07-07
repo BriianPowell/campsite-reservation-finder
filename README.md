@@ -21,13 +21,6 @@ Copy the example config:
 cp searches/example.yaml searches/my-trip.yaml
 ```
 
-Or start from a provider-specific template:
-
-```bash
-cp searches/recreation-dot-gov.disabled.yaml searches/recreation-dot-gov.yaml
-cp searches/reserve-california.disabled.yaml searches/reserve-california.yaml
-```
-
 The current enabled searches are organized by area:
 
 ```text
@@ -90,6 +83,8 @@ Optional email secrets supported by Camply:
 - `EMAIL_SMTP_SERVER`
 - `EMAIL_SMTP_PORT`
 
+`EMAIL_SUBJECT_LINE` is used as a subject prefix by `scripts/run-searches.sh`. Each Camply run appends the search config name, so a prefix of `Camply` produces subjects like `Camply: recreation-yosemite` and `Camply: reserve-california-coast`.
+
 For Gmail, `EMAIL_USERNAME` is usually your email address and `EMAIL_PASSWORD` should be an app password, not your normal account password.
 
 You can set secrets with the GitHub CLI from this repository after creating the GitHub repo:
@@ -117,6 +112,7 @@ Export email settings if you want to test real notifications:
 export EMAIL_TO_ADDRESS="you@example.com"
 export EMAIL_USERNAME="you@example.com"
 export EMAIL_PASSWORD="your-app-password"
+export EMAIL_SUBJECT_LINE="Camply"
 ```
 
 Run all enabled searches:
@@ -130,6 +126,22 @@ Test Camply's email notification setup directly:
 ```bash
 camply test-notifications --notifications email
 ```
+
+## Pre-Commit Checks
+
+Install the git hooks after installing dependencies:
+
+```bash
+pre-commit install
+```
+
+Run all checks manually:
+
+```bash
+pre-commit run --all-files
+```
+
+The configured hooks validate YAML, catch merge conflict markers, enforce executable shebang consistency, trim trailing whitespace, normalize line endings, ensure files end with a newline, and syntax-check `scripts/run-searches.sh`.
 
 ## GitHub Actions Schedule
 

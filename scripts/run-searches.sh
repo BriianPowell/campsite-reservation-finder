@@ -8,9 +8,11 @@ shopt -s nullglob
 configs=("${search_dir}"/*.yaml "${search_dir}"/*.yml)
 
 ran_search=0
+email_subject_prefix="${EMAIL_SUBJECT_LINE:-Camply}"
 
 for config in "${configs[@]}"; do
   name="$(basename "${config}")"
+  search_name="${name%.*}"
 
   case "${name}" in
     example.yaml|example.yml|*.disabled.yaml|*.disabled.yml)
@@ -19,8 +21,10 @@ for config in "${configs[@]}"; do
       ;;
   esac
 
+  subject="${email_subject_prefix}: ${search_name}"
   echo "Running Camply search config: ${name}"
-  camply campsites --yaml-config "${config}"
+  echo "Email subject: ${subject}"
+  EMAIL_SUBJECT_LINE="${subject}" camply campsites --yaml-config "${config}"
   ran_search=1
 done
 
