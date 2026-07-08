@@ -8,8 +8,9 @@ The workflow runs short `search_once` Camply searches on a schedule. This is a b
 
 1. GitHub Actions runs hourly, or whenever you start it manually.
 2. Python installs `camply` from `requirements.txt`.
-3. `scripts/run-searches.sh` runs each enabled YAML file in `searches/`.
-4. Camply sends email notifications when it finds matching availability.
+3. `python scripts/run_searches.py` runs the grouped search runner.
+4. The runner searches each enabled YAML file in `searches/`.
+5. Matching campsites are grouped into one Apprise notification per search config.
 
 `searches/example.yaml` is a template and is skipped by the runner. Provider-specific templates ending in `.disabled.yaml` are also skipped until you rename them. Enabled search configs are split by area so each region can have its own season and date window.
 
@@ -93,10 +94,10 @@ Add this repository secret before enabling notifications:
 For iCloud Mail, use an app-specific password and Apple’s SMTP server with Apprise’s STARTTLS email URL:
 
 ```text
-mailtos://_?smtp=smtp.mail.me.com&from=you@icloud.com&to=you@icloud.com&user=you@icloud.com&pass=APP_SPECIFIC_PASSWORD
+mailtos://icloud.com?user=you%40icloud.com&pass=APP_SPECIFIC_PASSWORD&smtp=smtp.mail.me.com&from=you%40icloud.com&to=you%40icloud.com
 ```
 
-Apple documents iCloud SMTP as `smtp.mail.me.com` on port `587` with SSL required. Apprise’s `mailtos://` uses STARTTLS on port `587`, which matches iCloud. Camply’s built-in `email` notifier uses implicit SSL and is not a good fit for iCloud SMTP.
+Apple documents iCloud SMTP as `smtp.mail.me.com` on port `587` with SSL required. Apprise’s `mailtos://` uses STARTTLS on port `587`, which matches iCloud. Camply’s built-in `email` notifier uses implicit SSL and is not a good fit for iCloud SMTP. URL-encode `@` as `%40` in email address parameters, and use an iCloud app-specific password with no spaces.
 
 You can set secrets with the GitHub CLI from this repository after creating the GitHub repo:
 
@@ -120,14 +121,16 @@ python -m pip install -r requirements.txt
 Export `APPRISE_URL` if you want to test real notifications:
 
 ```bash
-export APPRISE_URL="mailtos://_?smtp=smtp.mail.me.com&from=you@icloud.com&to=you@icloud.com&user=you@icloud.com&pass=APP_SPECIFIC_PASSWORD"
+export APPRISE_URL="mailtos://icloud.com?user=you%40icloud.com&pass=APP_SPECIFIC_PASSWORD&smtp=smtp.mail.me.com&from=you%40icloud.com&to=you%40icloud.com"
 ```
 
 Run all enabled searches:
 
 ```bash
-./scripts/run-searches.sh
+python scripts/run_searches.py
 ```
+
+The runner forces Camply searches to use `silent` notifications, then sends one formatted Apprise message per search config when matches are found. This avoids one email per campsite and keeps related availability grouped together.
 
 Test Camply's Apprise notification setup directly:
 
@@ -149,7 +152,7 @@ Run all checks manually:
 pre-commit run --all-files
 ```
 
-The configured hooks validate YAML, catch merge conflict markers, enforce executable shebang consistency, trim trailing whitespace, normalize line endings, ensure files end with a newline, and syntax-check `scripts/run-searches.sh`.
+The configured hooks validate YAML, catch merge conflict markers, enforce executable shebang consistency, trim trailing whitespace, normalize line endings, ensure files end with a newline, and compile-check `scripts/run_searches.py`.
 
 ## GitHub Actions Schedule
 

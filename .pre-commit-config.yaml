@@ -16,9 +16,9 @@ repos:
 
   - repo: local
     hooks:
-      - id: shellcheck-run-searches
-        name: Validate search runner shell syntax
-        entry: bash -n scripts/run-searches.sh
+      - id: py-compile-runner
+        name: Validate grouped search runner Python syntax
+        entry: python3 -m py_compile scripts/run_searches.py
         language: system
         pass_filenames: false
-        files: ^scripts/run-searches\.sh$
+        files: ^scripts/run_searches\.py$
