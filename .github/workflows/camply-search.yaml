@@ -3,7 +3,7 @@ name: Camply Search
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 */3 * * *'
 
 concurrency:
   group: camply-search

@@ -30,6 +30,7 @@ def main() -> int:
         return 1
 
     ran_search = False
+    failed_configs: list[str] = []
     search_dir = Path(os.getenv("SEARCH_DIR", DEFAULT_SEARCH_DIR))
     state_file = Path(os.getenv("STATE_FILE", DEFAULT_STATE_FILE))
     now = datetime.now(timezone.utc)
@@ -42,7 +43,12 @@ def main() -> int:
         ran_search = True
         search_name = config.stem
         print(f"Running Camply search config: {config.name}")
-        matches = run_search(config)
+        try:
+            matches = run_search(config)
+        except Exception as error:
+            failed_configs.append(config.name)
+            print_search_warning(config=config, error=error)
+            continue
         new_matches = [
             campsite
             for campsite in matches
@@ -93,6 +99,12 @@ def main() -> int:
         print(f"No enabled search configs found in {search_dir}.")
         print(
             "Copy searches/example.yaml to a new filename and fill in real search criteria."
+        )
+
+    if failed_configs:
+        print(
+            "Completed with search warnings for "
+            f"{', '.join(failed_configs)}. Successful search state was saved."
         )
 
     return 0
@@ -158,6 +170,16 @@ def parse_datetime(value: str) -> datetime | None:
     if parsed.tzinfo is None:
         return parsed.replace(tzinfo=timezone.utc)
     return parsed
+
+
+def print_search_warning(config: Path, error: Exception) -> None:
+    message = f"{error.__class__.__name__}: {error}"
+    print(f"Search failed for {config.name}: {message}", file=sys.stderr)
+    print(f"::warning file={config}::{escape_github_annotation(message)}")
+
+
+def escape_github_annotation(message: str) -> str:
+    return message.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
 
 
 def iter_search_configs(search_dir: Path) -> Iterable[Path]:

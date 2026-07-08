@@ -158,13 +158,15 @@ The configured hooks validate YAML, catch merge conflict markers, enforce execut
 
 ## GitHub Actions Schedule
 
-The workflow in `.github/workflows/camply-search.yml` runs hourly with:
+The workflow in `.github/workflows/camply-search.yml` runs every 3 hours with:
 
 ```yaml
 schedule:
-  - cron: "0 * * * *"
+  - cron: "0 */3 * * *"
 ```
 
 GitHub cron schedules are evaluated in UTC. Adjust the cron expression if you only want checks during certain hours.
 
 The workflow also caches `.cache/` so the 3-day notification dedupe state survives between scheduled runs.
+
+If one search config fails because a provider endpoint rejects or rate-limits the request, the runner logs a GitHub Actions warning and continues with the remaining configs. This keeps successful search notification state from being lost because of one provider-specific failure.
