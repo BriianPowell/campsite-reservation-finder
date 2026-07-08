@@ -49,4 +49,4 @@ jobs:
             camply-notifications-
 
       - name: Run Camply searches
-        run: python scripts/run_searches.py
+        run: python -m camply_runner

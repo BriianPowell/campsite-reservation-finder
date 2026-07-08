@@ -18,7 +18,7 @@ repos:
     hooks:
       - id: py-compile-runner
         name: Validate grouped search runner Python syntax
-        entry: python3 -m compileall -q scripts/run_searches.py camply_runner
+        entry: python3 -m compileall -q camply_runner
         language: system
         pass_filenames: false
-        files: ^(scripts/run_searches\.py|camply_runner/.*\.py)$
+        files: ^camply_runner/.*\.py$

@@ -8,7 +8,7 @@ The workflow runs short `search_once` Camply searches on a schedule. This is a b
 
 1. GitHub Actions runs hourly, or whenever you start it manually.
 2. Python installs `camply` from `requirements.txt`.
-3. `python scripts/run_searches.py` runs the grouped search runner.
+3. `python -m camply_runner` runs the grouped search runner.
 4. The runner searches each enabled YAML file in `searches/`.
 5. Matching campsites are grouped into one Apprise notification per search config.
 
@@ -123,7 +123,7 @@ export APPRISE_URL="mailtos://icloud.com?user=you%40icloud.com&pass=APP_SPECIFIC
 Run all enabled searches:
 
 ```bash
-python scripts/run_searches.py
+python -m camply_runner
 ```
 
 The runner forces Camply searches to use `silent` notifications, then sends one HTML-formatted Apprise message per search config when matches are found. This avoids one email per campsite and keeps related availability grouped together by campground and date window.
@@ -136,7 +136,7 @@ Test Camply's Apprise notification setup directly:
 camply test-notifications --notifications apprise
 ```
 
-This only checks that Apprise can send through your `APPRISE_URL`. Normal search notifications should be sent with `python scripts/run_searches.py`, which uses the custom HTML format above.
+This only checks that Apprise can send through your `APPRISE_URL`. Normal search notifications should be sent with `python -m camply_runner`, which uses the custom HTML format above.
 
 ## Pre-Commit Checks
 
@@ -152,7 +152,7 @@ Run all checks manually:
 pre-commit run --all-files
 ```
 
-The configured hooks validate YAML, catch merge conflict markers, enforce executable shebang consistency, trim trailing whitespace, normalize line endings, ensure files end with a newline, and compile-check `scripts/run_searches.py`.
+The configured hooks validate YAML, catch merge conflict markers, enforce executable shebang consistency, trim trailing whitespace, normalize line endings, ensure files end with a newline, and compile-check `camply_runner`.
 
 ## GitHub Actions Schedule
 
