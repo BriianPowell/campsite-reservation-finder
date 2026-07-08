@@ -49,8 +49,3 @@ end_date:
   - 2026-11-29
 nights: 3
 weekends: false
-notifications: apprise
-search_once: true
-continuous: false
-search_forever: false
-notify_first_try: false

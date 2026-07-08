@@ -48,10 +48,6 @@ start_date:
 end_date:
   - 2026-08-09
 nights: 3
-notifications: apprise
-search_once: true
-continuous: false
-search_forever: false
 ```
 
 You can use one of these target fields:
@@ -116,7 +112,7 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-`requirements.txt` installs `camply[apprise]` so Camply can load the Apprise notification backend.
+`requirements.txt` installs `camply[apprise]` so the runner can send notifications through Apprise.
 
 Export `APPRISE_URL` if you want to test real notifications:
 
@@ -130,15 +126,17 @@ Run all enabled searches:
 python scripts/run_searches.py
 ```
 
-The runner forces Camply searches to use `silent` notifications, then sends one formatted Apprise message per search config when matches are found. This avoids one email per campsite and keeps related availability grouped together.
+The runner forces Camply searches to use `silent` notifications, then sends one HTML-formatted Apprise message per search config when matches are found. This avoids one email per campsite and keeps related availability grouped together by campground and date window.
 
-The runner also deduplicates notifications using `.cache/camply-notifications.json`. A campsite is only notified once every 3 days for the same search config, campsite ID, facility ID, arrival date, and checkout date. GitHub Actions restores and saves `.cache` with `actions/cache`, so repeated hourly runs should not resend the same availability until the 3-day reminder window expires. Override the local state path with `STATE_FILE=/path/to/state.json` if needed.
+The runner also deduplicates notifications using `.cache/camply-notifications.json`. A campsite is only notified once every 3 days for the same search config, campsite ID, facility ID, arrival date, and checkout date. GitHub Actions restores and saves `.cache` with `actions/cache`, so repeated scheduled runs should not resend the same availability until the 3-day reminder window expires. Override the local state path with `STATE_FILE=/path/to/state.json` if needed.
 
 Test Camply's Apprise notification setup directly:
 
 ```bash
 camply test-notifications --notifications apprise
 ```
+
+This only checks that Apprise can send through your `APPRISE_URL`. Normal search notifications should be sent with `python scripts/run_searches.py`, which uses the custom HTML format above.
 
 ## Pre-Commit Checks
 
