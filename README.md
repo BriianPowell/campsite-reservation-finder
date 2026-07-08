@@ -115,6 +115,8 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
+`requirements.txt` installs `camply[apprise]` so Camply can load the Apprise notification backend.
+
 Export `APPRISE_URL` if you want to test real notifications:
 
 ```bash
