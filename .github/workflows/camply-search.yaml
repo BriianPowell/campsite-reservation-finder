@@ -40,5 +40,13 @@ jobs:
             exit 1
           fi
 
+      - name: Restore notification state
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: camply-notifications-${{ github.run_id }}
+          restore-keys: |
+            camply-notifications-
+
       - name: Run Camply searches
         run: python scripts/run_searches.py

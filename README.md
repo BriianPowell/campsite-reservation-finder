@@ -132,6 +132,8 @@ python scripts/run_searches.py
 
 The runner forces Camply searches to use `silent` notifications, then sends one formatted Apprise message per search config when matches are found. This avoids one email per campsite and keeps related availability grouped together.
 
+The runner also deduplicates notifications using `.cache/camply-notifications.json`. A campsite is only notified once every 3 days for the same search config, campsite ID, facility ID, arrival date, and checkout date. GitHub Actions restores and saves `.cache` with `actions/cache`, so repeated hourly runs should not resend the same availability until the 3-day reminder window expires. Override the local state path with `STATE_FILE=/path/to/state.json` if needed.
+
 Test Camply's Apprise notification setup directly:
 
 ```bash
@@ -164,3 +166,5 @@ schedule:
 ```
 
 GitHub cron schedules are evaluated in UTC. Adjust the cron expression if you only want checks during certain hours.
+
+The workflow also caches `.cache/` so the 3-day notification dedupe state survives between scheduled runs.
