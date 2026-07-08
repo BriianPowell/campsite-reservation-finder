@@ -1,0 +1,48 @@
+<html>
+<body>
+  <h2>{{ search_name }}</h2>
+
+  <p>
+    <strong>{{ new_match_count }}</strong> new matching {{ "campsite" if new_match_count == 1 else "campsites" }} found.<br>
+    <strong>{{ total_matches }}</strong> total matching {{ "campsite" if total_matches == 1 else "campsites" }} currently available.
+  </p>
+
+  {% for campground in campgrounds %}
+  <h3>{{ campground.name }}</h3>
+  <table border="1" cellpadding="6" cellspacing="0">
+    <thead>
+      <tr>
+        <th>Dates</th>
+        <th>Site</th>
+        <th>Loop</th>
+        <th>Type</th>
+        <th>Use</th>
+        <th>Occupancy</th>
+        <th>Equipment</th>
+        <th>Booking</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for campsite in campground.campsites %}
+      <tr>
+        <td>{{ campsite.dates }}</td>
+        <td>{{ campsite.site }}</td>
+        <td>{{ campsite.loop }}</td>
+        <td>{{ campsite.type }}</td>
+        <td>{{ campsite.use }}</td>
+        <td>{{ campsite.occupancy }}</td>
+        <td>{{ campsite.equipment }}</td>
+        <td>
+          {% if campsite.booking_url %}
+          <a href="{{ campsite.booking_url }}">Book</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endfor %}
+
+  <p><em>camply, the campsite finder</em></p>
+</body>
+</html>

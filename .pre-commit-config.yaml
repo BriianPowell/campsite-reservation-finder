@@ -22,3 +22,10 @@ repos:
         language: system
         pass_filenames: false
         files: ^camply_runner/.*\.py$
+
+      - id: test-runner
+        name: Run campsite finder tests
+        entry: python3 -m pytest
+        language: system
+        pass_filenames: false
+        files: ^(camply_runner/.*|tests/.*\.py)$

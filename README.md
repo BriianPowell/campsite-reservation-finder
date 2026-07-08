@@ -1,4 +1,4 @@
-# Campsite Reservation Finder
+# ⛺️🧐 Campsite Reservation Finder
 
 Automated campsite availability checks using [Camply](https://github.com/juftin/camply) and GitHub Actions.
 
@@ -126,7 +126,7 @@ Run all enabled searches:
 python -m camply_runner
 ```
 
-The runner forces Camply searches to use `silent` notifications, then sends one HTML-formatted Apprise message per search config when matches are found. This avoids one email per campsite and keeps related availability grouped together by campground and date window.
+The runner forces Camply searches to use `silent` notifications, then sends one HTML-formatted Apprise message per search config when matches are found. This avoids one email per campsite and keeps related availability grouped by campground, with one table row per available campsite and date window. The email markup lives in `camply_runner/templates/matches_email.html.j2`.
 
 The runner also deduplicates notifications using `.cache/camply-notifications.json`. A campsite is only notified once every 3 days for the same search config, campsite ID, facility ID, arrival date, and checkout date. GitHub Actions restores and saves `.cache` with `actions/cache`, so repeated scheduled runs should not resend the same availability until the 3-day reminder window expires. Override the local state path with `STATE_FILE=/path/to/state.json` if needed.
 
@@ -152,7 +152,13 @@ Run all checks manually:
 pre-commit run --all-files
 ```
 
-The configured hooks validate YAML, catch merge conflict markers, enforce executable shebang consistency, trim trailing whitespace, normalize line endings, ensure files end with a newline, and compile-check `camply_runner`.
+The configured hooks validate YAML, catch merge conflict markers, enforce executable shebang consistency, trim trailing whitespace, normalize line endings, ensure files end with a newline, compile-check `camply_runner`, and run the pytest suite.
+
+Run the tests directly:
+
+```bash
+python -m pytest
+```
 
 ## GitHub Actions Schedule
 

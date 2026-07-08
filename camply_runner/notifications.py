@@ -1,10 +1,17 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from html import escape
+from pathlib import Path
 from typing import Any
 
+from jinja2 import (  # type: ignore[reportMissingImports]
+    Environment,
+    FileSystemLoader,
+)
+
 from camply_runner.campsites import campsite_sort_key, date_field, field, word
+
+TEMPLATE_DIR = Path(__file__).resolve().parent / "templates"
 
 
 class AppriseNotifier:
@@ -41,76 +48,58 @@ class AppriseNotifier:
 
 
 class HtmlMatchFormatter:
+    def __init__(self) -> None:
+        self._template = Environment(
+            loader=FileSystemLoader(TEMPLATE_DIR),
+            autoescape=True,
+        ).get_template("matches_email.html.j2")
+
     def format(
         self,
         search_name: str,
         matches: list[Any],
         total_matches: int,
     ) -> str:
-        grouped: dict[tuple[str, str, str], list[Any]] = defaultdict(list)
+        grouped: dict[str, list[Any]] = defaultdict(list)
         for campsite in matches:
-            grouped[
-                (
-                    field(campsite, "facility_name"),
-                    date_field(campsite, "booking_date"),
-                    date_field(campsite, "booking_end_date"),
-                )
-            ].append(campsite)
+            grouped[field(campsite, "facility_name", "Unknown campground")].append(
+                campsite
+            )
 
-        lines = [
-            "<html>",
-            "<body>",
-            f"<h2>{escape(search_name)}</h2>",
-            "<p>"
-            f"<strong>{len(matches)}</strong> new matching "
-            f"{word(len(matches), 'campsite', 'campsites')} found.<br>"
-            f"<strong>{total_matches}</strong> total matching "
-            f"{word(total_matches, 'campsite', 'campsites')} currently available."
-            "</p>",
+        campgrounds = [
+            {
+                "name": facility_name,
+                "campsites": [
+                    self._format_campsite_row(campsite)
+                    for campsite in sorted(campsites, key=campsite_sort_key)
+                ],
+            }
+            for facility_name, campsites in sorted(grouped.items())
         ]
 
-        for (facility_name, booking_date, booking_end_date), campsites in sorted(
-            grouped.items()
-        ):
-            lines.extend(
-                [
-                    f"<h3>{escape(facility_name)}</h3>",
-                    (
-                        "<p><strong>"
-                        f"{display_date(booking_date)} to "
-                        f"{display_date(booking_end_date)}"
-                        "</strong></p>"
-                    ),
-                    "<ul>",
-                ]
-            )
-            for campsite in sorted(campsites, key=campsite_sort_key):
-                lines.append(self._format_campsite_item(campsite))
-            lines.append("</ul>")
-
-        lines.extend(
-            [
-                "<p><em>camply, the campsite finder</em></p>",
-                "</body>",
-                "</html>",
-            ]
+        return self._template.render(
+            search_name=search_name,
+            new_match_count=len(matches),
+            total_matches=total_matches,
+            campgrounds=campgrounds,
         )
-        return "\n".join(lines)
 
-    def _format_campsite_item(self, campsite: Any) -> str:
-        site_name = field(campsite, "campsite_site_name", "Unknown site")
-        loop_name = field(campsite, "campsite_loop_name", "Unknown loop")
-        campsite_type = field(campsite, "campsite_type", "Unknown type")
-        booking_url = field(campsite, "booking_url")
+    def _format_campsite_row(self, campsite: Any) -> dict[str, str]:
+        booking_date = date_field(campsite, "booking_date")
+        booking_end_date = date_field(campsite, "booking_end_date")
 
-        line = (
-            f"<li><strong>Site {escape(site_name)}</strong>"
-            f" - {escape(loop_name)}, {escape(campsite_type)}"
-        )
-        if booking_url:
-            escaped_url = escape(booking_url, quote=True)
-            line += f'<br><a href="{escaped_url}">{escaped_url}</a>'
-        return line + "</li>"
+        return {
+            "dates": f"{display_date(booking_date)} to {display_date(booking_end_date)}",
+            "site": field(campsite, "campsite_site_name", "Unknown site"),
+            "loop": field(campsite, "campsite_loop_name", "Unknown loop"),
+            "type": field(campsite, "campsite_type", "Unknown type"),
+            "use": field(campsite, "campsite_use_type"),
+            "occupancy": field(campsite, "campsite_occupancy"),
+            "equipment": format_permitted_equipment(
+                getattr(campsite, "permitted_equipment", "")
+            ),
+            "booking_url": field(campsite, "booking_url"),
+        }
 
 
 class NotificationError(ValueError):
@@ -118,4 +107,12 @@ class NotificationError(ValueError):
 
 
 def display_date(value: str) -> str:
-    return escape(value.split("T", 1)[0])
+    return value.split("T", 1)[0]
+
+
+def format_permitted_equipment(value: Any) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, list):
+        return ", ".join(str(item) for item in value)
+    return str(value)
