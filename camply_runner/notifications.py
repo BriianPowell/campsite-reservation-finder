@@ -90,11 +90,13 @@ class HtmlMatchFormatter:
 
         return {
             "dates": f"{display_date(booking_date)} to {display_date(booking_end_date)}",
-            "site": field(campsite, "campsite_site_name", "Unknown site"),
+            "site": format_site_name(
+                field(campsite, "campsite_site_name", "Unknown site")
+            ),
             "loop": field(campsite, "campsite_loop_name", "Unknown loop"),
             "type": field(campsite, "campsite_type", "Unknown type"),
             "use": field(campsite, "campsite_use_type"),
-            "occupancy": field(campsite, "campsite_occupancy"),
+            "occupancy": format_occupancy(getattr(campsite, "campsite_occupancy", "")),
             "equipment": format_permitted_equipment(
                 getattr(campsite, "permitted_equipment", "")
             ),
@@ -110,9 +112,36 @@ def display_date(value: str) -> str:
     return value.split("T", 1)[0]
 
 
+def format_site_name(value: str) -> str:
+    return value.removeprefix("Site:").strip()
+
+
+def format_occupancy(value: Any) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, (tuple, list)) and len(value) == 2:
+        minimum, maximum = value
+        return f"{minimum}-{maximum} people"
+    return str(value)
+
+
 def format_permitted_equipment(value: Any) -> str:
     if value is None:
         return ""
     if isinstance(value, list):
-        return ", ".join(str(item) for item in value)
+        return ", ".join(format_equipment_item(item) for item in value)
+    return format_equipment_item(value)
+
+
+def format_equipment_item(value: Any) -> str:
+    equipment_name = getattr(value, "equipment_name", None)
+    if equipment_name:
+        max_length = getattr(value, "max_length", None)
+        if max_length:
+            try:
+                formatted_length = f"{float(max_length):g}"
+            except (TypeError, ValueError):
+                formatted_length = str(max_length)
+            return f"{equipment_name} up to {formatted_length} ft"
+        return str(equipment_name)
     return str(value)

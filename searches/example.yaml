@@ -14,7 +14,7 @@ nights: 2
 
 # Optional filters.
 weekends: false
-# equipment:
-#   - [RV, 25]
+equipment:
+  - [Tent, 0]
 
 # GitHub Actions should run short one-shot searches on a schedule.

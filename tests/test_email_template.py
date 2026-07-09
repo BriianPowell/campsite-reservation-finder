@@ -14,12 +14,15 @@ def test_email_template_groups_campsites_by_campground_table() -> None:
                 facility_name="Lone <Pine>",
                 booking_date="2026-08-06T00:00:00",
                 booking_end_date="2026-08-09T00:00:00",
-                campsite_site_name="042",
+                campsite_site_name="Site: 042",
                 campsite_loop_name="PINE",
                 campsite_type="WALK TO",
                 campsite_use_type="Overnight",
                 campsite_occupancy=(0, 6),
-                permitted_equipment=["Tent", "Trailer"],
+                permitted_equipment=[
+                    SimpleNamespace(equipment_name="Tent", max_length=None),
+                    SimpleNamespace(equipment_name="Trailer", max_length=20.0),
+                ],
                 booking_url="https://www.recreation.gov/camping/campsites/67118",
             ),
             SimpleNamespace(
@@ -43,10 +46,11 @@ def test_email_template_groups_campsites_by_campground_table() -> None:
     assert "<th>Dates</th>" in body
     assert "<td>2026-08-06 to 2026-08-09</td>" in body
     assert "<td>042</td>" in body
+    assert "Site: 042" not in body
     assert "<td>WALK TO</td>" in body
     assert "<td>Overnight</td>" in body
-    assert "<td>(0, 6)</td>" in body
-    assert "<td>Tent, Trailer</td>" in body
+    assert "<td>0-6 people</td>" in body
+    assert "<td>Tent, Trailer up to 20 ft</td>" in body
     assert (
         '<a href="https://www.recreation.gov/camping/campsites/67118">Book</a>' in body
     )

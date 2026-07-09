@@ -1,12 +1,14 @@
 # ⛺️🧐 Campsite Reservation Finder
 
+[![finding campsites](https://github.com/BriianPowell/campsite-reservation-finder/actions/workflows/camply-search.yaml/badge.svg?branch=main&label=finding%20campsites)](https://github.com/BriianPowell/campsite-reservation-finder/actions/workflows/camply-search.yaml)
+
 Automated campsite availability checks using [Camply](https://github.com/juftin/camply) and GitHub Actions.
 
 The workflow runs short `search_once` Camply searches on a schedule. This is a better fit for GitHub Actions than `search_forever`, which is intended for an always-on machine.
 
 ## How It Works
 
-1. GitHub Actions runs hourly, or whenever you start it manually.
+1. GitHub Actions runs every 3 hours, or whenever you start it manually.
 2. Python installs `camply` from `requirements.txt`.
 3. `python -m camply_runner` runs the grouped search runner.
 4. The runner searches each enabled YAML file in `searches/`.
@@ -48,6 +50,8 @@ start_date:
 end_date:
   - 2026-08-09
 nights: 3
+equipment:
+  - [Tent, 0]
 ```
 
 You can use one of these target fields:
@@ -55,6 +59,8 @@ You can use one of these target fields:
 - `recreation_area` for broad searches across a Recreation.gov area.
 - `campgrounds` for one or more campground IDs.
 - `campsites` for exact campsite IDs. Camply treats this as the most specific target.
+
+For Recreation.gov searches, `equipment: [[Tent, 0]]` filters out RV-only compatibility and keeps the search focused on tent camping. ReserveCalifornia does not currently support the same equipment filter through Camply, so those configs rely on campground selection instead.
 
 Disable a search by renaming it to end with `.disabled.yaml`, for example `searches/my-trip.disabled.yaml`.
 

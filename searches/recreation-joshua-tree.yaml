@@ -46,3 +46,5 @@ end_date:
   - 2027-02-28
 nights: 3
 weekends: false
+equipment:
+  - [Tent, 0]
