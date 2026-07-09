@@ -1,6 +1,6 @@
 # ⛺️🧐 Campsite Reservation Finder
 
-[![finding campsites](https://github.com/BriianPowell/campsite-reservation-finder/actions/workflows/camply-search.yaml/badge.svg?branch=main&label=finding%20campsites)](https://github.com/BriianPowell/campsite-reservation-finder/actions/workflows/camply-search.yaml)
+[![finding campsites](https://img.shields.io/github/actions/workflow/status/BriianPowell/campsite-reservation-finder/camply-search.yaml?branch=main&label=finding%20campsites)](https://github.com/BriianPowell/campsite-reservation-finder/actions/workflows/camply-search.yaml)
 
 Automated campsite availability checks using [Camply](https://github.com/juftin/camply) and GitHub Actions.
 
