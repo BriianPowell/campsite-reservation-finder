@@ -56,7 +56,8 @@ def test_email_template_groups_campsites_by_campground_table() -> None:
     assert body.count("<tr>") == 3
     assert "<th>Dates</th>" in body
     assert "<th>Loop</th>" not in body
-    assert "<td>2026-08-06 to 2026-08-09</td>" in body
+    assert "<td>Aug 6, 2026 to Aug 9, 2026</td>" in body
+    assert "2026-08-06 to 2026-08-09" not in body
     assert "<td>042</td>" in body
     assert "Site: 042" not in body
     assert "<td>WALK TO</td>" in body

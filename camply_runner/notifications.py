@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -113,7 +114,12 @@ class NotificationError(ValueError):
 
 
 def display_date(value: str) -> str:
-    return value.split("T", 1)[0]
+    date_value = value.split("T", 1)[0]
+    try:
+        parsed_date = datetime.fromisoformat(date_value)
+    except ValueError:
+        return date_value
+    return f"{parsed_date.strftime('%b')} {parsed_date.day}, {parsed_date.year}"
 
 
 def format_site_name(value: str) -> str:
