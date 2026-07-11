@@ -8,10 +8,11 @@ from camply_runner.notifications import HtmlMatchFormatter
 def test_email_template_groups_campsites_by_campground_table() -> None:
     body = HtmlMatchFormatter().format(
         search_name="recreation-big-sur-inyo",
-        total_matches=2,
+        total_matches=3,
         matches=[
             SimpleNamespace(
                 facility_name="Lone <Pine>",
+                campsite_id=67118,
                 booking_date="2026-08-06T00:00:00",
                 booking_end_date="2026-08-09T00:00:00",
                 campsite_site_name="Site: 042",
@@ -38,8 +39,24 @@ def test_email_template_groups_campsites_by_campground_table() -> None:
             ),
             SimpleNamespace(
                 facility_name="Lone <Pine>",
+                campsite_id=67118,
                 booking_date="2026-08-13T00:00:00",
                 booking_end_date="2026-08-16T00:00:00",
+                campsite_site_name="Site: 042",
+                campsite_loop_name="PINE",
+                campsite_type="WALK TO",
+                campsite_use_type="Overnight",
+                campsite_occupancy=(0, 6),
+                permitted_equipment=[
+                    SimpleNamespace(equipment_name="Tent", max_length=None),
+                ],
+                booking_url="https://www.recreation.gov/camping/campsites/67118",
+            ),
+            SimpleNamespace(
+                facility_name="Lone <Pine>",
+                campsite_id=67119,
+                booking_date="2026-08-20T00:00:00",
+                booking_end_date="2026-08-23T00:00:00",
                 campsite_site_name="043",
                 campsite_loop_name="PINE",
                 campsite_type="STANDARD NONELECTRIC",
@@ -55,10 +72,19 @@ def test_email_template_groups_campsites_by_campground_table() -> None:
     assert '<table border="1" cellpadding="6" cellspacing="0">' in body
     assert body.count("<tr>") == 3
     assert "<th>Dates</th>" in body
+    assert "<th>Booking</th>" not in body
     assert "<th>Loop</th>" not in body
-    assert "<td>Aug 6, 2026 to Aug 9, 2026</td>" in body
+    assert (
+        '<a href="https://www.recreation.gov/camping/campsites/67118">'
+        "Aug 6, 2026 to Aug 9, 2026</a>"
+    ) in body
+    assert (
+        '<a href="https://www.recreation.gov/camping/campsites/67118">'
+        "Aug 13, 2026 to Aug 16, 2026</a>"
+    ) in body
     assert "2026-08-06 to 2026-08-09" not in body
     assert "<td>042</td>" in body
+    assert body.count("<td>042</td>") == 1
     assert "Site: 042" not in body
     assert "<td>WALK TO</td>" in body
     assert "<td>Overnight</td>" in body
@@ -67,7 +93,5 @@ def test_email_template_groups_campsites_by_campground_table() -> None:
         "<td>Small Tent<br>Tent<br>Large Tent Over 9X12<br>RV<br>Trailer<br>"
         "Pickup Camper<br>Pop up<br>Caravan/Camper Van<br>Fifth Wheel</td>"
     ) in body
-    assert (
-        '<a href="https://www.recreation.gov/camping/campsites/67118">Book</a>' in body
-    )
+    assert ">Book</a>" not in body
     assert "T00:00:00" not in body

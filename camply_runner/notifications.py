@@ -75,10 +75,7 @@ class HtmlMatchFormatter:
         campgrounds = [
             {
                 "name": facility_name,
-                "campsites": [
-                    self._format_campsite_row(campsite)
-                    for campsite in sorted(campsites, key=campsite_sort_key)
-                ],
+                "campsites": self._format_campsite_rows(campsites),
             }
             for facility_name, campsites in sorted(grouped.items())
         ]
@@ -90,12 +87,20 @@ class HtmlMatchFormatter:
             campgrounds=campgrounds,
         )
 
-    def _format_campsite_row(self, campsite: Any) -> dict[str, Any]:
-        booking_date = date_field(campsite, "booking_date")
-        booking_end_date = date_field(campsite, "booking_end_date")
+    def _format_campsite_rows(self, campsites: list[Any]) -> list[dict[str, Any]]:
+        grouped: dict[tuple[str, str, str, str, str], list[Any]] = {}
+        for campsite in sorted(campsites, key=campsite_sort_key):
+            grouped.setdefault(campsite_group_key(campsite), []).append(campsite)
+        return [
+            self._format_campsite_row(campsite_group)
+            for campsite_group in grouped.values()
+        ]
+
+    def _format_campsite_row(self, campsites: list[Any]) -> dict[str, Any]:
+        campsite = campsites[0]
 
         return {
-            "dates": f"{display_date(booking_date)} to {display_date(booking_end_date)}",
+            "dates": [format_date_link(campsite) for campsite in campsites],
             "site": format_site_name(
                 field(campsite, "campsite_site_name", "Unknown site")
             ),
@@ -105,12 +110,31 @@ class HtmlMatchFormatter:
             "equipment": format_permitted_equipment(
                 getattr(campsite, "permitted_equipment", "")
             ),
-            "booking_url": field(campsite, "booking_url"),
         }
 
 
 class NotificationError(ValueError):
     pass
+
+
+def format_date_link(campsite: Any) -> dict[str, str]:
+    booking_date = date_field(campsite, "booking_date")
+    booking_end_date = date_field(campsite, "booking_end_date")
+
+    return {
+        "label": f"{display_date(booking_date)} to {display_date(booking_end_date)}",
+        "booking_url": field(campsite, "booking_url"),
+    }
+
+
+def campsite_group_key(campsite: Any) -> tuple[str, str, str, str, str]:
+    return (
+        field(campsite, "facility_id") or field(campsite, "facility_name"),
+        field(campsite, "campsite_id") or field(campsite, "campsite_site_name"),
+        field(campsite, "campsite_loop_name"),
+        field(campsite, "campsite_type"),
+        field(campsite, "campsite_use_type"),
+    )
 
 
 def display_date(value: str) -> str:

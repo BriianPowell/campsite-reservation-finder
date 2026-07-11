@@ -18,23 +18,21 @@
         <th>Use</th>
         <th>Occupancy</th>
         <th>Equipment</th>
-        <th>Booking</th>
       </tr>
     </thead>
     <tbody>
       {% for campsite in campground.campsites %}
       <tr>
-        <td>{{ campsite.dates }}</td>
+        <td>
+          {% for date in campsite.dates %}
+          {% if date.booking_url %}<a href="{{ date.booking_url }}">{{ date.label }}</a>{% else %}{{ date.label }}{% endif %}{% if not loop.last %}<br>{% endif %}
+          {% endfor %}
+        </td>
         <td>{{ campsite.site }}</td>
         <td>{{ campsite.type }}</td>
         <td>{{ campsite.use }}</td>
         <td>{{ campsite.occupancy }}</td>
         <td>{% for equipment in campsite.equipment %}{{ equipment }}{% if not loop.last %}<br>{% endif %}{% endfor %}</td>
-        <td>
-          {% if campsite.booking_url %}
-          <a href="{{ campsite.booking_url }}">Book</a>
-          {% endif %}
-        </td>
       </tr>
       {% endfor %}
     </tbody>
