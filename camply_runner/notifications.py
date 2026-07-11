@@ -12,6 +12,11 @@ from jinja2 import (  # type: ignore[reportMissingImports]
 from camply_runner.campsites import campsite_sort_key, date_field, field, word
 
 TEMPLATE_DIR = Path(__file__).resolve().parent / "templates"
+TENT_EQUIPMENT_DISPLAY_ORDER = {
+    "small tent": 0,
+    "tent": 1,
+    "large tent over 9x12": 2,
+}
 
 
 class AppriseNotifier:
@@ -84,7 +89,7 @@ class HtmlMatchFormatter:
             campgrounds=campgrounds,
         )
 
-    def _format_campsite_row(self, campsite: Any) -> dict[str, str]:
+    def _format_campsite_row(self, campsite: Any) -> dict[str, Any]:
         booking_date = date_field(campsite, "booking_date")
         booking_end_date = date_field(campsite, "booking_end_date")
 
@@ -93,7 +98,6 @@ class HtmlMatchFormatter:
             "site": format_site_name(
                 field(campsite, "campsite_site_name", "Unknown site")
             ),
-            "loop": field(campsite, "campsite_loop_name", "Unknown loop"),
             "type": field(campsite, "campsite_type", "Unknown type"),
             "use": field(campsite, "campsite_use_type"),
             "occupancy": format_occupancy(getattr(campsite, "campsite_occupancy", "")),
@@ -120,28 +124,35 @@ def format_occupancy(value: Any) -> str:
     if value is None:
         return ""
     if isinstance(value, (tuple, list)) and len(value) == 2:
-        minimum, maximum = value
-        return f"{minimum}-{maximum} people"
+        _, maximum = value
+        return f"{maximum} people"
     return str(value)
 
 
-def format_permitted_equipment(value: Any) -> str:
+def format_permitted_equipment(value: Any) -> list[str]:
     if value is None:
-        return ""
+        return []
     if isinstance(value, list):
-        return ", ".join(format_equipment_item(item) for item in value)
-    return format_equipment_item(value)
+        equipment = [format_equipment_item(item) for item in value]
+        return [
+            equipment_name
+            for original_index, equipment_name in sorted(
+                enumerate(equipment),
+                key=lambda item: equipment_display_sort_key(item[1], item[0]),
+            )
+        ]
+    return [format_equipment_item(value)]
 
 
 def format_equipment_item(value: Any) -> str:
     equipment_name = getattr(value, "equipment_name", None)
     if equipment_name:
-        max_length = getattr(value, "max_length", None)
-        if max_length:
-            try:
-                formatted_length = f"{float(max_length):g}"
-            except (TypeError, ValueError):
-                formatted_length = str(max_length)
-            return f"{equipment_name} up to {formatted_length} ft"
         return str(equipment_name)
     return str(value)
+
+
+def equipment_display_sort_key(value: str, original_index: int) -> tuple[int, int]:
+    tent_order = TENT_EQUIPMENT_DISPLAY_ORDER.get(value.casefold())
+    if tent_order is not None:
+        return (0, tent_order)
+    return (1, original_index)

@@ -14,7 +14,6 @@
       <tr>
         <th>Dates</th>
         <th>Site</th>
-        <th>Loop</th>
         <th>Type</th>
         <th>Use</th>
         <th>Occupancy</th>
@@ -27,11 +26,10 @@
       <tr>
         <td>{{ campsite.dates }}</td>
         <td>{{ campsite.site }}</td>
-        <td>{{ campsite.loop }}</td>
         <td>{{ campsite.type }}</td>
         <td>{{ campsite.use }}</td>
         <td>{{ campsite.occupancy }}</td>
-        <td>{{ campsite.equipment }}</td>
+        <td>{% for equipment in campsite.equipment %}{{ equipment }}{% if not loop.last %}<br>{% endif %}{% endfor %}</td>
         <td>
           {% if campsite.booking_url %}
           <a href="{{ campsite.booking_url }}">Book</a>
