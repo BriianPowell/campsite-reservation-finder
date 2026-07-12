@@ -2,50 +2,42 @@
 provider: ReserveCalifornia
 
 campgrounds:
-  - 634 # Crystal Cove SP Cottages, Crystal Cove, CA
+  - 757 # Crystal Cove SP Beach Cottages - Beach Cottages
+  - 634 # Crystal Cove SP Cottages
   - 690 # Pfeiffer Big Sur SP, Big Sur, CA
   - 709 # San Elijo State Beach, San Elijo, CA
-  - 757 # Crystal Cove SP Beach Cottages - Beach Cottages
-  - 2157 # Crystal Cove SP Moro Campground - Deer Canyon
-  - 2159 # Crystal Cove SP Moro Campground - Lower Moro Campground
-  - 447 # Crystal Cove SP Moro Campground - Moro Campground
-  - 2158 # Crystal Cove SP Moro Campground - Upper Moro Campground
+  # - 2157 # Crystal Cove SP Moro Campground - Deer Canyon
+  # - 2159 # Crystal Cove SP Moro Campground - Lower Moro Campground
+  # - 447 # Crystal Cove SP Moro Campground - Moro Campground
+  # - 2158 # Crystal Cove SP Moro Campground - Upper Moro Campground
 
 start_date:
-  - 2026-08-06
-  - 2026-08-13
-  - 2026-08-20
-  - 2026-08-27
-  - 2026-09-03
-  - 2026-09-10
-  - 2026-09-17
-  - 2026-09-24
-  - 2026-10-01
-  - 2026-10-08
-  - 2026-10-15
-  - 2026-10-22
-  - 2026-10-29
-  - 2026-11-05
-  - 2026-11-12
-  - 2026-11-19
-  - 2026-11-26
+  - 2027-03-04
+  - 2027-03-11
+  - 2027-03-18
+  - 2027-03-25
+  - 2027-04-01
+  - 2027-04-08
+  - 2027-04-15
+  - 2027-04-22
+  - 2027-04-29
+  - 2027-05-06
+  - 2027-05-13
+  - 2027-05-20
+  - 2027-05-27
 end_date:
-  - 2026-08-09
-  - 2026-08-16
-  - 2026-08-23
-  - 2026-08-30
-  - 2026-09-06
-  - 2026-09-13
-  - 2026-09-20
-  - 2026-09-27
-  - 2026-10-04
-  - 2026-10-11
-  - 2026-10-18
-  - 2026-10-25
-  - 2026-11-01
-  - 2026-11-08
-  - 2026-11-15
-  - 2026-11-22
-  - 2026-11-29
+  - 2027-03-07
+  - 2027-03-14
+  - 2027-03-21
+  - 2027-03-28
+  - 2027-04-04
+  - 2027-04-11
+  - 2027-04-18
+  - 2027-04-25
+  - 2027-05-02
+  - 2027-05-09
+  - 2027-05-16
+  - 2027-05-23
+  - 2027-05-30
 nights: 3
 weekends: false

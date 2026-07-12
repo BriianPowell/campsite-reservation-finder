@@ -28,13 +28,13 @@ The current enabled searches are organized by area:
 
 ```text
 searches/
-  recreation-yosemite.yaml
-  recreation-sequoia-kings.yaml
   recreation-joshua-tree.yaml
   recreation-mojave.yaml
   recreation-big-sur-inyo.yaml
   reserve-california-coast.yaml
-  reserve-california-desert.yaml
+  recreation-yosemite.disabled.yaml
+  recreation-sequoia-kings.disabled.yaml
+  reserve-california-desert.disabled.yaml
 ```
 
 Tune `start_date`, `end_date`, and `nights` independently in each file. The current configs use explicit Thursday-to-Sunday windows: each `start_date` entry is a Thursday arrival, and the matching `end_date` entry is the Sunday checkout date. For example, desert searches can target cooler months while Yosemite and Sequoia searches can focus on summer and early fall.
